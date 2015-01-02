@@ -23,6 +23,16 @@ for ($i=1;$i<=$anz_seiten;$i++) {
 	echo $i."\n"; // \n = Newline
 }
 
+//Jetzt wird es spannend, da Regex bei Zeilenumbrüchen manchmal etwas suckt
+// ngg-gallery-thumbnail wurde im Quellcode eindeutig als Vorkommnis vor einem Bild erkannt
+//Wir nehmen nun den Quellcode, ersetzen den Zeilenumbruch durch ein Leerzeichen und entfernen whitespaces
+
+$quellcode = str_replace("\n"," ",$quellcode); //wir können ruhig in eine verwendete Anfrage direkt reinschreiben, PHP ist da recht schmerzfrei
+$quellcode = trim($quellcode);
+
+preg_match_all('/(ngg-gallery-thumbnail\")(.*?)(title)/i',  $quellcode , $matches2); 
+
+print_r($matches2); // und via print_r den Regex testen
 
 // Es steht fest, dass es in dem Beispiel 4 Seiten sind, die werden auch durch den count so ermittelt
 // Manuell wurde überprüft, ob hinter ?nggpage=1 auch die 1. Seite aufgerufen wird.
