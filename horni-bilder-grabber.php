@@ -22,7 +22,7 @@ if (isset($argv[1])) {
 
 	$anz_seiten = count($matches);
 	if ($anz_seiten<1) {
-		$anz_seiten == 1;
+		$anz_seiten = 1;
 	}
 
 	for ($y=1;$y<=$anz_seiten;$y++) {
