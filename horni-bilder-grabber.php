@@ -20,7 +20,7 @@ if ($anz_seiten<1) {
 
 //Testen einer validen Schleife
 for ($i=1;$i<=$anz_seiten;$i++) {
-	echo $i."\n"; // \n = Newline
+	//echo $i."\n"; // \n = Newline
 }
 
 //Jetzt wird es spannend, da Regex bei Zeilenumbrüchen manchmal etwas suckt
@@ -32,7 +32,15 @@ $quellcode = trim($quellcode);
 
 preg_match_all('/(ngg-gallery-thumbnail\")(.*?)(title)/i',  $quellcode , $matches2); 
 
-print_r($matches2); // und via print_r den Regex testen
+//Wir haben nun ein Mehrdimmensionales Array, aus dem müssen wir nun nochmal einen Regex fahren, allerdings in einer Schleife
+
+$anz_bilder = count($matches2[2]);
+
+for ($i=0;$i<$anz_bilder;$i++) { //unser Array fängt bei 0 an, deshalb müssen wir 1 kleiner als Anzahl gehen
+	preg_match('/(href=\")(.*?)(\")/i',  $matches2[2][$i], $matches3);
+	echo $matches3[2]."\n";   //wenn wir gezielt cutten, ist [2] die richtige Wahl 
+}
+
 
 // Es steht fest, dass es in dem Beispiel 4 Seiten sind, die werden auch durch den count so ermittelt
 // Manuell wurde überprüft, ob hinter ?nggpage=1 auch die 1. Seite aufgerufen wird.
