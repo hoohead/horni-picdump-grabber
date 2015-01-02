@@ -19,7 +19,7 @@ if ($anz_seiten<1) {
 }
 
 //Testen einer validen Schleife
-for ($i=1;$i<=$anz_seiten;$i++) {
+for ($y=1;$y<=$anz_seiten;$y++) {
 	//echo $i."\n"; // \n = Newline
 }
 
@@ -27,26 +27,31 @@ for ($i=1;$i<=$anz_seiten;$i++) {
 // ngg-gallery-thumbnail wurde im Quellcode eindeutig als Vorkommnis vor einem Bild erkannt
 //Wir nehmen nun den Quellcode, ersetzen den Zeilenumbruch durch ein Leerzeichen und entfernen whitespaces
 
-$quellcode = str_replace("\n"," ",$quellcode); //wir können ruhig in eine verwendete Anfrage direkt reinschreiben, PHP ist da recht schmerzfrei
-$quellcode = trim($quellcode);
 
-preg_match_all('/(ngg-gallery-thumbnail\")(.*?)(title)/i',  $quellcode , $matches2); 
+
+ 
 
 //Wir haben nun ein Mehrdimmensionales Array, aus dem müssen wir nun nochmal einen Regex fahren, allerdings in einer Schleife
 
+
+for ($y=1;$y<=$anz_seiten;$y++) {
+$quellcode = get_content("www.hornoxe.com","/hornoxe-com-picdump-395/?nggpage=".$y);
+$quellcode = str_replace("\n"," ",$quellcode); //wir können ruhig in eine verwendete Anfrage direkt reinschreiben, PHP ist da recht schmerzfrei
+$quellcode = trim($quellcode);
+preg_match_all('/(ngg-gallery-thumbnail\")(.*?)(title)/i',  $quellcode , $matches2);
 $anz_bilder = count($matches2[2]);
-
-for ($i=0;$i<$anz_bilder;$i++) { //unser Array fängt bei 0 an, deshalb müssen wir 1 kleiner als Anzahl gehen
-	preg_match('/(href=\")(.*?)(\")/i',  $matches2[2][$i], $matches3);
-	$bildurl = $matches3[2];   //wenn wir gezielt cutten, ist [2] die richtige Wahl
-	$bildname = basename($matches3[2]);
-	$bild = file_get_contents($bildurl); // da hier nicht mit Schutzmechanismen zu rechnen ist, setze ich hier file_get_contents ein
-	//aber auch hier könnte man Dinge wie Referer oder Cookies mit übergeben ...
-	//da Bilder recht klein sind, ist das temporäre zwischenspeichern in einer Variable unkritisch
-	file_put_contents($bildname,$bild); //speichern des Bildes auf der Festplatte
-	 
+	
+	for ($i=0;$i<$anz_bilder;$i++) { //unser Array fängt bei 0 an, deshalb müssen wir 1 kleiner als Anzahl gehen
+		preg_match('/(href=\")(.*?)(\")/i',  $matches2[2][$i], $matches3);
+		$bildurl = $matches3[2];   //wenn wir gezielt cutten, ist [2] die richtige Wahl
+		$bildname = basename($matches3[2]);
+		$bild = file_get_contents($bildurl); // da hier nicht mit Schutzmechanismen zu rechnen ist, setze ich hier file_get_contents ein
+		//aber auch hier könnte man Dinge wie Referer oder Cookies mit übergeben ...
+		//da Bilder recht klein sind, ist das temporäre zwischenspeichern in einer Variable unkritisch
+		file_put_contents($bildname,$bild); //speichern des Bildes auf der Festplatte
+		 
+	}
 }
-
 
 // Es steht fest, dass es in dem Beispiel 4 Seiten sind, die werden auch durch den count so ermittelt
 // Manuell wurde überprüft, ob hinter ?nggpage=1 auch die 1. Seite aufgerufen wird.
