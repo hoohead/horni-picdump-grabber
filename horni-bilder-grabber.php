@@ -38,7 +38,13 @@ $anz_bilder = count($matches2[2]);
 
 for ($i=0;$i<$anz_bilder;$i++) { //unser Array fängt bei 0 an, deshalb müssen wir 1 kleiner als Anzahl gehen
 	preg_match('/(href=\")(.*?)(\")/i',  $matches2[2][$i], $matches3);
-	echo $matches3[2]."\n";   //wenn wir gezielt cutten, ist [2] die richtige Wahl 
+	$bildurl = $matches3[2];   //wenn wir gezielt cutten, ist [2] die richtige Wahl
+	$bildname = basename($matches3[2]);
+	$bild = file_get_contents($bildurl); // da hier nicht mit Schutzmechanismen zu rechnen ist, setze ich hier file_get_contents ein
+	//aber auch hier könnte man Dinge wie Referer oder Cookies mit übergeben ...
+	//da Bilder recht klein sind, ist das temporäre zwischenspeichern in einer Variable unkritisch
+	file_put_contents($bildname,$bild); //speichern des Bildes auf der Festplatte
+	 
 }
 
 
