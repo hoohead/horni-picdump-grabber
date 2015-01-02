@@ -1,38 +1,48 @@
 <?php
-//Setzen globaler Variabeln und testen
-$server = "www.hornoxe.com";
-$picdumpurl = "/hornoxe-com-picdump-395/";
 
-$quellcode = get_content($server,$picdumpurl);
+echo "example: php horni-bilder-grabber.php /hornoxe-com-picdump-395/\n";
+
+if (isset($argv[1])) { 
+	$picdumpurl = $argv[1];
+	mkdir(str_replace("/","",$picdumpurl));
+	chdir(str_replace("/","",$picdumpurl));
+
+    if(substr($picdumpurl,-1)!= '/') {
+		$picdumpurl=$picdumpurl.'/';
+	}
+    if(substr($picdumpurl,0,1)!= '/') {
+		$picdumpurl='/'.$picdumpurl;
+	}
 
 
-preg_match_all('/(nggpage)(.*?)(\")/i',  $quellcode , $matches); 
+	$server = "www.hornoxe.com";
+	$quellcode = get_content($server,$picdumpurl);
 
+	preg_match_all('/(nggpage)(.*?)(\")/i',  $quellcode , $matches); 
 
-$anz_seiten = count($matches);
-if ($anz_seiten<1) {
-	$anz_seiten == 1;
-}
+	$anz_seiten = count($matches);
+	if ($anz_seiten<1) {
+		$anz_seiten == 1;
+	}
 
-for ($y=1;$y<=$anz_seiten;$y++) {
-$quellcode = get_content($server,$picdumpurl."?nggpage=".$y);
-$quellcode = str_replace("\n"," ",$quellcode); 
-$quellcode = trim($quellcode);
-preg_match_all('/(ngg-gallery-thumbnail\")(.*?)(title)/i',  $quellcode , $matches2);
-$anz_bilder = count($matches2[2]);
-	
-	for ($i=0;$i<$anz_bilder;$i++) { 
-		preg_match('/(href=\")(.*?)(\")/i',  $matches2[2][$i], $matches3);
-		$bildurl = $matches3[2];   
-		$bildname = basename($matches3[2]);
-		$bild = file_get_contents($bildurl); 
-		file_put_contents($bildname,$bild); 
-		 
+	for ($y=1;$y<=$anz_seiten;$y++) {
+	$quellcode = get_content($server,$picdumpurl."?nggpage=".$y);
+	$quellcode = str_replace("\n"," ",$quellcode); 
+	$quellcode = trim($quellcode);
+	preg_match_all('/(ngg-gallery-thumbnail\")(.*?)(title)/i',  $quellcode , $matches2);
+	$anz_bilder = count($matches2[2]);
+		
+		for ($i=0;$i<$anz_bilder;$i++) { 
+			preg_match('/(href=\")(.*?)(\")/i',  $matches2[2][$i], $matches3);
+			$bildurl = $matches3[2];   
+			$bildname = basename($matches3[2]);
+			$bild = file_get_contents($bildurl); 
+			file_put_contents($bildname,$bild); 
+		}
 	}
 }
-
 function get_content($host,$pfad) {
-
+$sitesource = ""; 
 $sock = fsockopen($host, 80); 
 fputs($sock, "GET ".$pfad." HTTP/1.1\r\n");
 fputs($sock, "Host: ".$host."\r\n");
@@ -42,10 +52,10 @@ fputs($sock, "Accept-Language: de,de-DE;q=0.5\r\n");
 fputs($sock, "Connection: close\r\n\r\n");
 
 while(!feof($sock)) 
-$bla .= fgets($sock, 4096); 
+$sitesource .= fgets($sock, 4096); 
 fclose($sock);
 
-return $bla;
+return $sitesource;
 
 }
 ?>
