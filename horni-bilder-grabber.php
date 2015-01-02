@@ -1,7 +1,21 @@
 <?php
 
-echo get_content("www.hornoxe.com","/hornoxe-com-picdump-395/"); //Testen ob die Funktion greift
+//echo get_content("www.hornoxe.com","/hornoxe-com-picdump-395/"); //Testen ob die Funktion greift
 
+//Zuerst muss die Anzahl der Seiten ermittelt werden nggpage ist Bestandteil des Links und kommt so im Quellcode nicht nochmal vor
+//Sollte dies doch mehrmals vorkommen, würde man auf den ganzen Link matchen.
+
+//Quellcode laden:
+
+$quellcode = get_content("www.hornoxe.com","/hornoxe-com-picdump-395/");
+//Regex auf wie oft kommt nggpage irgendwas " (Anführungszeichen) vor
+
+preg_match_all('/(nggpage)(.*?)(\")/i',  $quellcode , $matches); //Anführungszeichen in Regex muss mit \ maskiert werden
+
+//Ausgabe des Regex und testen der Funktion count
+
+print_r($matches);
+echo count($matches);
 
 //Packen des Socketscriptes in eine Funktion, da wir darauf mehrmals zugreifen müssen
 function get_content($host,$pfad) {
