@@ -12,10 +12,24 @@ $quellcode = get_content("www.hornoxe.com","/hornoxe-com-picdump-395/");
 
 preg_match_all('/(nggpage)(.*?)(\")/i',  $quellcode , $matches); //Anführungszeichen in Regex muss mit \ maskiert werden
 
-//Ausgabe des Regex und testen der Funktion count
+//Anzahl setzen + Sicherheitsfunktion bei Einseitigen Picdumps
+$anz_seiten = count($matches);
+if ($anz_seiten<1) {
+	$anz_seiten == 1;
+}
 
-print_r($matches);
-echo count($matches);
+//Testen einer validen Schleife
+for ($i=1;$i<=$anz_seiten;$i++) {
+	echo $i."\n"; // \n = Newline
+}
+
+
+// Es steht fest, dass es in dem Beispiel 4 Seiten sind, die werden auch durch den count so ermittelt
+// Manuell wurde überprüft, ob hinter ?nggpage=1 auch die 1. Seite aufgerufen wird.
+// Da dies so ist, kann man sich die 4 Seiten, bzw. die ermittelte Anzahl von Seiten laden, ohne einen Fehler zu provozieren
+
+//Weiter geht es
+
 
 //Packen des Socketscriptes in eine Funktion, da wir darauf mehrmals zugreifen müssen
 function get_content($host,$pfad) {
